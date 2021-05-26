@@ -1,0 +1,16 @@
+[package]
+name = "link"
+version = "0.1.0"
+authors = ["jakeroggenbuck <jakeroggenbuck2@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+rocket = "0.4.8-dev"
+serde = { version = "1.0", features = ["derive"] }
+postgres = { version = "0.15", features = ["with-chrono"] }
+diesel = { version = "1.4.4", features = ["postgres"] }
+
+[dependencies.rocket_contrib]
+version = "0.4.9"
+default-features = false
+features = ["diesel_postgres_pool"]
