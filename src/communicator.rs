@@ -45,6 +45,18 @@ pub fn write_redirect(new: NewRedirect, conn: &diesel::PgConnection) {
         .expect("Error saving new redirect");
 }
 
+pub fn increment_count(given_alias: &str, conn: &diesel::PgConnection) {
+    use self::schema::redirects::dsl::*;
+    let result = diesel::update(redirects)
+        .filter(alias.eq(given_alias))
+        .set(count.eq(count + 1))
+        .execute(conn);
+    match result {
+        Ok(_) => (),
+        Err(e) => eprintln!("Could not update count for {}\n {}", given_alias, e),
+    }
+}
+
 /// Write a single token to the database
 pub fn write_token(new: NewToken, conn: &diesel::PgConnection) {
     diesel::insert_into(tokens::table)

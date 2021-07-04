@@ -6,6 +6,7 @@ pub struct UrlRedirect {
     pub id: i32,
     pub alias: String,
     pub url: String,
+    pub count: i32,
 }
 
 #[derive(Debug, Insertable, Clone)]
@@ -13,6 +14,7 @@ pub struct UrlRedirect {
 pub struct NewRedirect<'a> {
     pub alias: &'a str,
     pub url: &'a str,
+    pub count: &'a i32,
 }
 
 #[derive(Queryable, Clone, Debug, Deserialize)]

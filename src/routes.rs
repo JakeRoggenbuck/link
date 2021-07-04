@@ -1,12 +1,12 @@
 use super::communicator::*;
+use super::forms::{RedirectForm, TokenForm};
 use super::models::{NewRedirect, NewToken, UrlRedirect};
+use super::DbConn;
 use rocket::http::Status;
 use rocket::request::{Form, FromRequest};
 use rocket::response::Redirect;
 use rocket::Request;
 use rocket::*;
-use super::DbConn;
-use super::forms::{RedirectForm, TokenForm};
 
 #[derive(Debug)]
 pub struct ApiKey(String);
@@ -27,7 +27,9 @@ impl<'a, 'r> FromRequest<'a, 'r> for ApiKey {
         match keys.len() {
             0 => Outcome::Failure((Status::BadRequest, ApiKeyError::Missing)),
             // Give the key and the database connection to check if the key is in the database
-            1 if is_valid(keys[0], request.guard::<DbConn>().unwrap()) => Outcome::Success(ApiKey(keys[0].to_string())),
+            1 if is_valid(keys[0], request.guard::<DbConn>().unwrap()) => {
+                Outcome::Success(ApiKey(keys[0].to_string()))
+            }
             1 => Outcome::Failure((Status::BadRequest, ApiKeyError::Invalid)),
             _ => Outcome::Failure((Status::BadRequest, ApiKeyError::BadCount)),
         }
@@ -56,6 +58,9 @@ pub fn get_redirect(alias: String, conn: DbConn) -> Redirect {
     if redirect.len() == 1 {
         // Extract the url from the redirect
         let url: String = redirect.get(0).unwrap().url.to_string();
+        let alias: String = redirect.get(0).unwrap().alias.to_string();
+
+        increment_count(&alias, &conn);
         if url != "" {
             // Sends the user to this url
             return Redirect::to(format!("{}", url));
@@ -70,10 +75,17 @@ pub fn get_redirects(_key: ApiKey, conn: DbConn) -> String {
     let redirects: Vec<UrlRedirect> = get_many_redirects(&conn);
     // Check if there are redirects
     if redirects.len() != 0 {
-        // Format the redirect with an arror and tabs
+        // Format the redirect with an arrow and tabs
         let redirect_strings: String = redirects
             .iter()
-            .map(|x| x.alias.to_owned() + "\t->\t" + x.url.as_str() + "\n")
+            .map(|x| {
+                format!(
+                    "{}: {} -> {}\n",
+                    x.count.to_owned(),
+                    x.alias.to_owned(),
+                    x.url.as_str()
+                )
+            })
             .collect();
         format!("{}", redirect_strings)
     } else {
@@ -93,6 +105,7 @@ pub fn new_redirect(_key: ApiKey, redirect_form: Form<RedirectForm>, conn: DbCon
     let new: NewRedirect = NewRedirect {
         alias: redirect.alias.as_str(),
         url: redirect.url.as_str(),
+        count: &0,
     };
 
     // Checks if the alias exists in the database, as to not overwrite it
