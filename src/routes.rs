@@ -43,7 +43,7 @@ pub fn not_found(req: &Request) -> String {
 
 #[get("/")]
 pub fn root() -> String {
-    format!("Hello world!")
+    Redirect::to(format!("{}", "https://github.com/JakeRoggenbuck/link"))
 }
 
 #[get("/hash/<thing>")]
