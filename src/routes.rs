@@ -42,8 +42,8 @@ pub fn not_found(req: &Request) -> String {
 }
 
 #[get("/")]
-pub fn root() -> String {
-    Redirect::to(format!("{}", "https://github.com/JakeRoggenbuck/link"))
+pub fn root() ->  Redirect {
+    Redirect::to(format!("https://github.com/JakeRoggenbuck/link"))
 }
 
 #[get("/hash/<thing>")]
