@@ -42,7 +42,7 @@ pub fn not_found(req: &Request) -> String {
 }
 
 #[get("/")]
-pub fn root() ->  Redirect {
+pub fn root() -> Redirect {
     Redirect::to(format!("https://github.com/JakeRoggenbuck/link"))
 }
 

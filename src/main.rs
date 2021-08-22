@@ -10,10 +10,10 @@ extern crate rocket_contrib;
 pub struct DbConn(diesel::PgConnection);
 
 pub mod communicator;
+pub mod forms;
 pub mod models;
 pub mod routes;
 pub mod schema;
-pub mod forms;
 
 use self::routes::*;
 

@@ -1,9 +1,9 @@
+use super::models::*;
 use super::schema;
 use super::schema::{redirects, tokens};
-use super::models::*;
+use super::DbConn;
 use crate::diesel::{ExpressionMethods, QueryDsl, RunQueryDsl};
 use sha2::{Digest, Sha256};
-use super::DbConn;
 use std::env;
 
 /// Make a sha256 sum of a token
