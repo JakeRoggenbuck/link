@@ -1,4 +1,4 @@
-# link ![Rust](https://img.shields.io/github/workflow/status/jakeroggenbuck/link/Rust?style=for-the-badge)
+# link ![Rust](https://img.shields.io/github/actions/workflow/status/jakeroggenbuck/link/rust.yml?branch=main&style=for-the-badge)
 
 ## Description
 A public mirror of the private development link repository, without the .env and Rocket.toml hosted on heroku
